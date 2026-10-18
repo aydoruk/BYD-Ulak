@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="tr.ulak.byd.car">
+
+    <!-- Standart Ağ, Kamera ve Arka Plan İzinleri (DiLink 3.0 / Android 10) -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+    <!-- BYD DiLink 3.0 Donanım Erişim İzinleri (Seal U DM-i 2025) -->
+    <uses-permission android:name="android.permission.BYDAUTO_BODYWORK_COMMON" />
+    <uses-permission android:name="android.permission.BYDAUTO_BODYWORK_GET" />
+    <uses-permission android:name="android.permission.BYDAUTO_BODYWORK_SET" />
+    <uses-permission android:name="android.permission.BYDAUTO_AC_COMMON" />
+    <uses-permission android:name="android.permission.BYDAUTO_STATISTIC_COMMON" />
+    <uses-permission android:name="android.permission.BYDAUTO_ENERGY_COMMON" />
+    <uses-permission android:name="android.permission.BYDAUTO_CHARGING_COMMON" />
+    <uses-permission android:name="android.permission.BYDAUTO_ENGINE_COMMON" />
+    <uses-permission android:name="android.permission.BYDAUTO_SPEED_COMMON" />
+    <uses-permission android:name="android.permission.BYDAUTO_GEARBOX_COMMON" />
+    <uses-permission android:name="android.permission.BYDAUTO_SENSOR_COMMON" />
+
+    <application
+        android:allowBackup="true"
+        android:label="Ulak Araç (DiLink 3.0)"
+        android:icon="@android:drawable/ic_dialog_info"
+        android:supportsRtl="true"
+        android:theme="@android:style/Theme.DeviceDefault.NoActionBar">
+
+        <activity
+            android:name=".CarMainActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- DiLink 3.0 Kesintisiz Telemetri & Nöbetçi Servisi -->
+        <service
+            android:name=".UlakDiLink3Service"
+            android:enabled="true"
+            android:exported="false" />
+
+        <!-- Kontak Açıldığında / Multimedya Başladığında Otomatik Başlatıcı -->
+        <receiver
+            android:name=".BootReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter android:priority="1000">
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="com.byd.action.DILINK_READY" />
+            </intent-filter>
+        </receiver>
+    </application>
+</manifest>
