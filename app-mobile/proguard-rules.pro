@@ -1,0 +1,1 @@
+-keep class tr.ulak.byd.mobile.** { *; }
