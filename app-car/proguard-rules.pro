@@ -1,0 +1,2 @@
+-keep class android.hardware.bydauto.** { *; }
+-keep class tr.ulak.byd.car.** { *; }
