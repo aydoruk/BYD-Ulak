@@ -7,10 +7,10 @@ Bu proje paketi iki adet yerel (native) Android uygulamasını barındırır:
 ---
 
 ## YÖNTEM 1: Bilgisayara Hiçbir Program Kurmadan Bulutta (GitHub) Otomatik APK Oluşturma (2 Dakika)
-Proje içerisine **`.github/workflows/build-apks.yml`** otomatik bulut derleyicisi eklenmiştir:
+Proje içerisine **`.github/workflows/blank.yml`** otomatik bulut derleyicisi eklenmiştir:
 1. Ücretsiz bir GitHub hesabında yeni bir depo (Repository) açın.
 2. Bu ZIP paketinin içindeki tüm dosya ve klasörleri depoya yükleyin.
-3. Üst menüdeki **Actions** sekmesine tıklayın. **"ULAK BYD APK Otomatik Derleyici"** otomatik olarak çalışacak ve ~2 dakika içinde her iki APK dosyasını imzalanmış olarak (`UlakCar_DiLink3_APK` ve `UlakMobile_S26Ultra_APK`) indirmeye hazır hale getirecektir.
+3. Üst menüdeki **Actions** sekmesine tıklayın. **"ULAK BYD APK Otomatik Derleyici"** otomatik olarak çalışacak ve ~2 dakika içinde her iki APK dosyasını imzalanmış olarak (`UlakCar_Di[...]` ve `UlakMobile_S26Ultra_...`) arşiv olarak indirmeniz için hazırlayacaktır.
 
 ---
 
