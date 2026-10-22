@@ -1,10 +1,11 @@
+@file:Suppress("TrailingComma")
+
 package tr.ulak.byd.mobile
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -30,6 +31,7 @@ import java.net.DatagramSocket
 import java.net.Socket
 import kotlin.math.roundToInt
 import kotlin.math.sin
+import kotlin.time.Duration.Companion.milliseconds
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,8 +42,8 @@ class MainActivity : ComponentActivity() {
                     primary = Color(0xFF10B981),
                     secondary = Color(0xFF06B6D4),
                     background = Color(0xFF060B14),
-                    surface = Color(0xFF0F172A)
-                )
+                    surface = Color(0xFF0F172A),
+                ),
             ) {
                 UlakS26UltraApp()
             }
@@ -54,14 +56,14 @@ fun UlakS26UltraApp() {
     val scope = rememberCoroutineScope()
     var selectedTab by remember { mutableIntStateOf(0) }
     var carIp by remember { mutableStateOf("192.168.43.1") }
-    var liveConnected by remember { mutableStateOf(false) }
+    var liveConnected by remember { mutableStateOf(value = false) }
 
     // Telemetri & Kontrol State'leri
-    var isLocked by remember { mutableStateOf(true) }
-    var acActive by remember { mutableStateOf(false) }
+    var isLocked by remember { mutableStateOf(value = true) }
+    var acActive by remember { mutableStateOf(value = false) }
     var targetTemp by remember { mutableFloatStateOf(21.5f) }
     var cabinTemp by remember { mutableFloatStateOf(23.4f) }
-    var sentryActive by remember { mutableStateOf(true) }
+    var sentryActive by remember { mutableStateOf(value = true) }
     var driverSeatVent by remember { mutableIntStateOf(2) }
     var driverSeatHeat by remember { mutableIntStateOf(0) }
     var passengerSeatVent by remember { mutableIntStateOf(1) }
@@ -71,10 +73,10 @@ fun UlakS26UltraApp() {
     var speedKmh by remember { mutableIntStateOf(0) }
     var powerKw by remember { mutableFloatStateOf(0.4f) }
     var driveMode by remember { mutableStateOf("EV") }
-    var simulating by remember { mutableStateOf(false) }
+    var simulating by remember { mutableStateOf(value = false) }
     var selectedCam by remember { mutableStateOf("Ön Geniş (AVM)") }
-    var intercomActive by remember { mutableStateOf(false) }
-    var cabinListen by remember { mutableStateOf(false) }
+    var intercomActive by remember { mutableStateOf(value = false) }
+    var cabinListen by remember { mutableStateOf(value = false) }
 
     // UDP 45454 Dinleyici (UlakCar_DiLink3.apk'dan gelen gerçek zamanlı telemetri)
     LaunchedEffect(Unit) {
@@ -104,9 +106,9 @@ fun UlakS26UltraApp() {
     LaunchedEffect(simulating, driveMode) {
         while (simulating && isActive) {
             val t = System.currentTimeMillis() / 900.0
-            speedKmh = (72 + sin(t) * 42).roundToInt().coerceIn(0, 175)
+            speedKmh = (72 + (sin(t) * 42)).roundToInt().coerceIn(0, 175)
             powerKw = ((sin(t * 1.3) * 55) + if (driveMode == "Sport") 45 else 18).toFloat()
-            delay(800L)
+            delay(800.milliseconds)
         }
         if (!simulating) {
             speedKmh = 0
@@ -138,12 +140,12 @@ fun UlakS26UltraApp() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(Color(0xFF0B1324))
-                    .padding(horizontal = 16.dp, vertical = 12.dp)
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Column {
                         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -151,26 +153,26 @@ fun UlakS26UltraApp() {
                                 text = "ULAK",
                                 color = Color(0xFF10B981),
                                 fontSize = 22.sp,
-                                fontWeight = FontWeight.ExtraBold
+                                fontWeight = FontWeight.ExtraBold,
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Box(
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(6.dp))
                                     .background(Color(0xFF06B6D4).copy(alpha = 0.2f))
-                                    .padding(horizontal = 8.dp, vertical = 2.dp)
+                                    .padding(horizontal = 8.dp, vertical = 2.dp),
                             ) {
                                 Text(
                                     text = if (liveConnected) "DiLink 3.0 CANLI" else "DiLink 3.0 • S26 Ultra",
                                     color = Color(0xFF22D3EE),
-                                    fontSize = 11.sp
+                                    fontSize = 11.sp,
                                 )
                             }
                         }
                         Text(
                             text = "BYD Seal U DM-i (2025) • ${aux12v}V 12V Akü • $combinedRange km",
                             color = Color(0xFF94A3B8),
-                            fontSize = 12.sp
+                            fontSize = 12.sp,
                         )
                     }
 
@@ -180,14 +182,14 @@ fun UlakS26UltraApp() {
                             sendCarCommand(JSONObject().put("command", "SET_LOCK").put("locked", isLocked))
                         },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = if (isLocked) Color(0xFF10B981).copy(alpha = 0.2f) else Color(0xFFEF4444).copy(alpha = 0.25f)
-                        )
+                            containerColor = if (isLocked) Color(0xFF10B981).copy(alpha = 0.2f) else Color(0xFFEF4444).copy(alpha = 0.25f),
+                        ),
                     ) {
                         Text(
                             text = if (isLocked) "KİLİTLİ" else "AÇIK",
                             color = if (isLocked) Color(0xFF34D399) else Color(0xFFF87171),
                             fontWeight = FontWeight.Bold,
-                            fontSize = 12.sp
+                            fontSize = 12.sp,
                         )
                     }
                 }
@@ -204,28 +206,28 @@ fun UlakS26UltraApp() {
                                 modifier = Modifier
                                     .size(8.dp)
                                     .clip(CircleShape)
-                                    .background(if (selectedTab == index) Color(0xFF10B981) else Color(0xFF475569))
+                                    .background(if (selectedTab == index) Color(0xFF10B981) else Color(0xFF475569)),
                             )
                         },
-                        label = { Text(title, fontSize = 11.sp) }
+                        label = { Text(title, fontSize = 11.sp) },
                     )
                 }
             }
-        }
+        },
     ) { padding ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
                 .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp)
+            verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
             if (selectedTab == 0) {
                 item {
                     Card(
                         colors = CardDefaults.cardColors(containerColor = Color(0xFF0F172A)),
                         shape = RoundedCornerShape(20.dp),
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
                             Text(
@@ -307,7 +309,24 @@ fun UlakS26UltraApp() {
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
-                            Text("DILINK 3.0 360° AVM KAMERA & ULAK NÖBETÇİ", color = Color(0xFF22D3EE), fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text("DILINK 3.0 360° AVM KAMERA & ULAK NÖBETÇİ", color = Color(0xFF22D3EE), fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                                Button(
+                                    onClick = {
+                                        sentryActive = !sentryActive
+                                        sendCarCommand(JSONObject().put("command", "SET_SENTRY").put("enable", sentryActive))
+                                    },
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = if (sentryActive) Color(0xFF10B981) else Color(0xFF1E293B)
+                                    )
+                                ) {
+                                    Text(if (sentryActive) "Nöbetçi Aktif" else "Nöbetçi Kapalı", fontSize = 11.sp)
+                                }
+                            }
                             Spacer(modifier = Modifier.height(12.dp))
                             Box(
                                 modifier = Modifier
@@ -409,7 +428,7 @@ fun UlakS26UltraApp() {
                                     modifier = Modifier.weight(1f),
                                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1E293B))
                                 ) {
-                                    Text("Sürücü Soğutma: $driverSeatVent", fontSize = 12.sp)
+                                    Text("Sürücü Soğutma: $driverSeatVent", fontSize = 11.sp)
                                 }
                                 Button(
                                     onClick = {
@@ -419,7 +438,16 @@ fun UlakS26UltraApp() {
                                     modifier = Modifier.weight(1f),
                                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1E293B))
                                 ) {
-                                    Text("Sürücü Isıtma: $driverSeatHeat", fontSize = 12.sp)
+                                    Text("Sürücü Isıtma: $driverSeatHeat", fontSize = 11.sp)
+                                }
+                                Button(
+                                    onClick = {
+                                        passengerSeatVent = (passengerSeatVent + 1) % 3
+                                    },
+                                    modifier = Modifier.weight(1f),
+                                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1E293B))
+                                ) {
+                                    Text("Yolcu Soğutma: $passengerSeatVent", fontSize = 11.sp)
                                 }
                             }
                         }

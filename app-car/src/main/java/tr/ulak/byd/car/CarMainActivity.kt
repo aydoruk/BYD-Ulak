@@ -1,10 +1,9 @@
 package tr.ulak.byd.car
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.Typeface
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -13,8 +12,10 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
+import androidx.core.graphics.toColorInt
 import java.net.NetworkInterface
 
+@SuppressLint("SetTextI18n")
 class CarMainActivity : Activity() {
 
     private lateinit var bridge: DiLink3HardwareBridge
@@ -35,7 +36,7 @@ class CarMainActivity : Activity() {
 
         val root = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            setBackgroundColor(Color.parseColor("#060B14"))
+            setBackgroundColor("#060B14".toColorInt())
             setPadding(48, 36, 48, 36)
             gravity = Gravity.TOP
         }
@@ -43,7 +44,7 @@ class CarMainActivity : Activity() {
         val title = TextView(this).apply {
             text = "ULAK ARAÇ • BYD Seal U DM-i (2025) • DiLink 3.0"
             textSize = 24f
-            setTextColor(Color.parseColor("#10B981"))
+            setTextColor("#10B981".toColorInt())
             typeface = Typeface.DEFAULT_BOLD
         }
 
@@ -51,16 +52,16 @@ class CarMainActivity : Activity() {
         val subtitle = TextView(this).apply {
             text = "Durum: BYD VHAL Köprüsü Aktif | Araç IP: $ipAddress | UDP: 45454 | TCP Komut: 45455"
             textSize = 15f
-            setTextColor(Color.parseColor("#22D3EE"))
+            setTextColor("#22D3EE".toColorInt())
             setPadding(0, 8, 0, 20)
         }
 
         telemetryText = TextView(this).apply {
             text = bridge.readTelemetrySnapshot().toString(2)
             textSize = 14f
-            setTextColor(Color.parseColor("#E2E8F0"))
+            setTextColor("#E2E8F0".toColorInt())
             typeface = Typeface.MONOSPACE
-            setBackgroundColor(Color.parseColor("#0F172A"))
+            setBackgroundColor("#0F172A".toColorInt())
             setPadding(32, 24, 32, 24)
         }
 
@@ -69,7 +70,7 @@ class CarMainActivity : Activity() {
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 0,
-                1f
+                1f,
             )
         }
 
@@ -101,11 +102,7 @@ class CarMainActivity : Activity() {
 
     private fun startUlakService() {
         val serviceIntent = Intent(this, UlakDiLink3Service::class.java)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(serviceIntent)
-        } else {
-            startService(serviceIntent)
-        }
+        startForegroundService(serviceIntent)
     }
 
     private fun getLocalIpAddress(): String {
@@ -116,7 +113,7 @@ class CarMainActivity : Activity() {
                 val addrs = intf.inetAddresses
                 while (addrs.hasMoreElements()) {
                     val addr = addrs.nextElement()
-                    if (!addr.isLoopbackAddress && addr.hostAddress?.contains(':') == false) {
+                    if ((!addr.isLoopbackAddress) && (addr.hostAddress?.contains(':') == false)) {
                         return addr.hostAddress ?: "192.168.43.1"
                     }
                 }

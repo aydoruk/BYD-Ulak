@@ -9,7 +9,7 @@ import org.json.JSONObject
  * BydAutoStatisticDevice, BydAutoBodyworkDevice, BydAutoAcDevice, BydAutoEnergyDevice,
  * BydAutoGearboxDevice ve BydAutoSpeedDevice sınıflarını Reflection ile çağırır.
  */
-class DiLink3HardwareBridge(private val context: Context) {
+class DiLink3HardwareBridge(private val context: Context? = null) {
 
     companion object {
         private const val TAG = "UlakDiLink3Bridge"
@@ -49,11 +49,12 @@ class DiLink3HardwareBridge(private val context: Context) {
     }
 
     private fun getBydDevice(className: String): Any? {
+        val ctx = context ?: return null
         return try {
             val clazz = Class.forName(className)
             val getInstance = clazz.getMethod("getInstance", Context::class.java)
-            getInstance.invoke(null, context)
-        } catch (e: Exception) {
+            getInstance.invoke(null, ctx)
+        } catch (_: Exception) {
             Log.w(TAG, "Cihaz sınıfı bulunamadı ($className) - Fallback devrede")
             null
         }
@@ -64,8 +65,8 @@ class DiLink3HardwareBridge(private val context: Context) {
         return try {
             val method = instance.javaClass.getMethod(methodName)
             val raw = (method.invoke(instance) as? Number)?.toDouble() ?: fallback
-            if (raw.isNaN() || raw < 0.0) fallback else raw
-        } catch (e: Exception) {
+            if ((raw.isNaN()) || (raw < 0.0)) fallback else raw
+        } catch (_: Exception) {
             fallback
         }
     }
@@ -75,7 +76,7 @@ class DiLink3HardwareBridge(private val context: Context) {
         return try {
             val method = instance.javaClass.getMethod(methodName)
             (method.invoke(instance) as? Number)?.toInt() ?: fallback
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             fallback
         }
     }
